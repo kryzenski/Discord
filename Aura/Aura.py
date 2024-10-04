@@ -1,4 +1,4 @@
-# DISCORD BOT
+# AURA DISCORD BOT
 
 import discord
 from discord.ext import commands
