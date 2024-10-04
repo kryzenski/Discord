@@ -3,51 +3,84 @@
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='!')
+# Create a dictionary to store the users' points
+aura_points = {}
 
-# Dictionary to store user points
-user_points = {}
+# Define positive and negative reactions
+positive_reactions = ['👍', '❤️', '😂', '🎉']
+negative_reactions = ['👎', '😢', '😡']
 
-@bot.event
-async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
+# Create the bot
+intents = discord.Intents.default()
+intents.reactions = True
+intents.messages = True
+intents.guilds = True
+intents.message_content = True  # Needed to access message content
+intents.members = True  # Needed to track members and their points
 
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+# Function to update points based on reactions
+def update_aura_points(user, reaction, is_adding):
+    if user not in aura_points:
+        aura_points[user] = 0
+
+    if reaction.emoji in positive_reactions:
+        if is_adding:
+            aura_points[user] += 1  # Increase points for positive reactions
+        else:
+            aura_points[user] -= 1  # Decrease points if the reaction is removed
+
+    elif reaction.emoji in negative_reactions:
+        if is_adding:
+            aura_points[user] -= 1  # Decrease points for negative reactions
+        else:
+            aura_points[user] += 1  # Restore points if the negative reaction is removed
+
+# Event to handle when a reaction is added
 @bot.event
 async def on_reaction_add(reaction, user):
-    # Check if the reaction is on a message in a server channel
-    if reaction.message.channel.type == discord.ChannelType.text:
-        # Get the message author
-        author = reaction.message.author
-        # Check if the author is a server member
-        if author in reaction.message.channel.guild.members:
-            # Get the reaction emoji
-            emoji = reaction.emoji
-            # Check if the reaction is positive or negative
-            if emoji in ['👍', '💯', '👏', '😂', '😎', '']:  # positive reactions
-                points = 10
-            elif emoji in ['❤️', '🔥', '😍', '💰']:  # Mega positive reactions
-                points = 20
-            if emoji in ['🏆', '⭐️', '👏']:  # Hyper positive reactions
-                points = 10
-            elif emoji in ['👎', '😠', '🚫','😢']:  # negative reactions
-                points = -5
-            else:
-                return  # ignore other reactions
-            # Update the user's points
-            if author.id in user_points:
-                user_points[author.id] += points
-            else:
-                user_points[author.id] = points
-            # Send a message to the channel with the updated points
-            await reaction.message.channel.send(f'{author.mention} now has {user_points[author.id]} AURA points!')
+    if reaction.message.author == user:
+        return  # Prevent users from reacting to their own messages
 
-@bot.command(name='points')
-async def get_points(ctx, user: discord.Member = None):
-    if user is None:
-        user = ctx.author
-    if user.id in user_points:
-        await ctx.send(f'{user.mention} has {user_points[user.id]} aura points!')
-    else:
-        await ctx.send(f'{user.mention} has 0 aura points!')
+    # Update the message author's aura points based on the reaction
+    update_aura_points(reaction.message.author, reaction, is_adding=True)
 
+    # Send a message in the channel to show the updated points (optional)
+    await reaction.message.channel.send(f"{reaction.message.author.display_name} now has {aura_points[reaction.message.author]} aura points!")
+
+# Event to handle when a reaction is removed
+@bot.event
+async def on_reaction_remove(reaction, user):
+    if reaction.message.author == user:
+        return  # Prevent users from reacting to their own messages
+
+    # Update the message author's aura points based on the reaction removal
+    update_aura_points(reaction.message.author, reaction, is_adding=False)
+
+    # Send a message in the channel to show the updated points (optional)
+    await reaction.message.channel.send(f"{reaction.message.author.display_name} now has {aura_points[reaction.message.author]} aura points!")
+
+# Command to check a user's aura points
+@bot.command(name="points")
+async def check_points(ctx, member: discord.Member = None):
+    member = member or ctx.author  # If no member is specified, default to the command sender
+    points = aura_points.get(member, 0)  # Get the member's points or 0 if they have none
+    await ctx.send(f"{member.display_name} has {points} aura points!")
+
+# Command to display the leaderboard
+@bot.command(name="leaderboard")
+async def leaderboard(ctx):
+    if not aura_points:
+        await ctx.send("No aura points have been assigned yet.")
+        return
+
+    sorted_points = sorted(aura_points.items(), key=lambda item: item[1], reverse=True)
+    leaderboard_message = "**Aura Points Leaderboard:**\n"
+    for user, points in sorted_points:
+        leaderboard_message += f"{user.display_name}: {points} points\n"
+
+    await ctx.send(leaderboard_message)
+
+# Run the bot with the token (replace 'YOUR_BOT_TOKEN' with your actual bot token)
 bot.run('YOUR_DISCORD_BOT_TOKEN')
