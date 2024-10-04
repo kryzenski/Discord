@@ -23,8 +23,30 @@ The bot can be configured through the config.json file. The following options ar
 
 token: Your Discord bot token.
 
-#### reactionTypes: An object mapping reaction emojis to their point values (e.g. { '👍': 1, '👎': -1 }).
-#### pointsPerReaction: The number of points awarded per reaction (default: +10 and -5).
+## Explanation:
+#### Tracking Points:
+
+The bot uses a dictionary aura_points to store each member's points. The keys are Discord member objects, and the values are their corresponding points.
+Positive and Negative Reactions:
+
+You can modify positive_reactions and negative_reactions lists to include the specific emojis you want to use for positive and negative feedback. By default, common emojis like 👍, ❤️, and 👎 are used.
+Reaction Events:
+
+on_reaction_add: This event triggers whenever a reaction is added to a message. The bot checks if the reaction is positive or negative and adjusts the author's points accordingly.
+on_reaction_remove: This event triggers whenever a reaction is removed. The bot adjusts the points accordingly, reversing the effect of the reaction.
+Commands:
+
+#### !points [member]: Allows a user to check their aura points or another member's points if specified.
+#### !leaderboard: Displays a leaderboard of users and their points in descending order.
+
+### Token:
+
+Replace YOUR_BOT_TOKEN with your actual Discord bot token from the Discord Developer Portal.
+Running the Bot:
+Ensure you have your bot token.
+Install the required libraries with pip install discord.py.
+Run the Python script, and invite your bot to a server where you can start tracking and rewarding users based on reactions.
+This bot will now track points based on the type of reactions users receive on their messages!
 
 ### Contributing
 Contributions are welcome! If you'd like to help improve AURA, please fork this repository and submit a pull request.
