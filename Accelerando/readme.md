@@ -46,12 +46,12 @@ Start the bot: node index.js
 ### Lyrics
 #### !lyrics: View the lyrics of the current song.
 
-### Configuration
-#### Environment Variables
-##### DISCORD_TOKEN: Your Discord bot token
-##### SPOTIFY_CLIENT_ID: Your Spotify client ID
-##### SPOTIFY_CLIENT_SECRET: Your Spotify client secret
-#### Config File
+## Configuration
+### Environment Variables
+#### DISCORD_TOKEN: Your Discord bot token
+#### SPOTIFY_CLIENT_ID: Your Spotify client ID
+#### SPOTIFY_CLIENT_SECRET: Your Spotify client secret
+### Config File
 config.json: Configure the bot settings, such as the prefix and default volume
 
 ## Support
