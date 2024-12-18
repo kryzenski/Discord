@@ -1,5 +1,5 @@
-# BeatBot - The Ultimate Discord Music Experience
-## Welcome to BeatBot, the perfect music bot for your Discord server! 🤘
+# Clef - The Ultimate Discord Music Experience
+## Welcome to Clef, the perfect music bot for your Discord server! 🤘
 
 ## Features
 
@@ -23,7 +23,7 @@ View lyrics for the current playing song in sync with the music
 ## Getting Started
 
 ### Installation
-Clone the repository: git clone https://github.com/your-username/BeatBot.git
+Clone the repository: git clone https://github.com/your-username/Clef.git
 Install dependencies: npm install
 Configure the bot: config.json
 Running the Bot
@@ -59,4 +59,4 @@ Join our Discord server: Invite Link
 Report issues: Issue Tracker
 
 ## License and Contributing
-BeatBot created by @kryzenski is open source and Contributions are welcomed !
+Clef created by @kryzenski is open source and Contributions are welcomed !
